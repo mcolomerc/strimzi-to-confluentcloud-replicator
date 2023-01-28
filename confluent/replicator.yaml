@@ -1,0 +1,36 @@
+apiVersion: platform.confluent.io/v1beta1
+kind: Connector
+metadata:
+  name: replicator
+  namespace: confluent
+spec:
+  connectClusterRef:
+    name: connect
+  class: "io.confluent.connect.replicator.ReplicatorSourceConnector"
+  taskMax: 2
+  configs: 
+    # topic.whitelist: "topic1"
+    topic.regex: ".*" 
+    confluent.license: ""
+    confluent.topic.replication.factor: "3"
+    confluent.topic.bootstrap.servers: "<CCLOUD_BOOTSTRAP_URL>"
+    confluent.topic.sasl.jaas.config: "org.apache.kafka.common.security.plain.PlainLoginModule required username='<API_KEY>' password='<API_SECRET>';"
+    confluent.topic.sasl.mechanism: "PLAIN"
+    confluent.topic.security.protocol: "SASL_SSL"
+    dest.kafka.bootstrap.servers: "<CCLOUD_BOOTSTRAP_URL>"
+    dest.kafka.sasl.jaas.config: "org.apache.kafka.common.security.plain.PlainLoginModule required username='<API_KEY>' password='<API_SECRET>';"
+    dest.kafka.sasl.mechanism: "PLAIN"
+    dest.kafka.security.protocol: "SASL_SSL"
+    key.converter: "io.confluent.connect.replicator.util.ByteArrayConverter"
+    value.converter: "io.confluent.connect.replicator.util.ByteArrayConverter"
+    src.consumer.confluent.monitoring.interceptor.bootstrap.servers: "strimzi-cluster-kafka-bootstrap.default.svc.cluster.local:9092"
+    # src.consumer.confluent.monitoring.interceptor.sasl.jaas.config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"<source-user>\" password=\"<source-pass>\";"
+    # src.consumer.confluent.monitoring.interceptor.sasl.mechanism: "PLAIN"
+    # src.consumer.confluent.monitoring.interceptor.security.protocol: "SASL_SSL"
+    src.consumer.group.id: "replicator"
+    src.consumer.interceptor.classes: "io.confluent.monitoring.clients.interceptor.MonitoringConsumerInterceptor"
+    src.kafka.bootstrap.servers: "strimzi-cluster-kafka-bootstrap.default.svc.cluster.local:9092"
+    # src.kafka.sasl.jaas.config: "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"<source-user>\" password=\"<source-pass>\";"
+    # src.kafka.sasl.mechanism: "PLAIN"
+    # src.kafka.security.protocol: "SASL_SSL"
+   
